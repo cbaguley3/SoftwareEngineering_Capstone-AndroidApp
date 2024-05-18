@@ -11,7 +11,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.d308app.R;
 
 public class VacationDetails extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".UI.VacationDetails">
 
+
     <ScrollView
         android:layout_width="448dp"
         android:layout_height="250dp"

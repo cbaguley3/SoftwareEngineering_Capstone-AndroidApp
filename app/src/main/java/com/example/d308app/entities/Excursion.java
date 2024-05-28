@@ -17,7 +17,6 @@ public class Excursion {
     public Excursion(int excursionID, String excursionName, String date, int vacationID) {
         this.excursionID = excursionID;
         this.excursionName = excursionName;
-
         this.date = date;
         this.vacationID = vacationID;
 

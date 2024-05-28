@@ -5,7 +5,8 @@
         android:id="@+id/vacationsave"/>
     <item android:title="Delete Vacation"
         android:id="@+id/vacationdelete"/>
-    <item android:title="Add Excursions"
+    <item android:title="Add Excursion"
         android:id="@+id/addExcursions"/>
-
+    <item android:title="Delete All Excursions"
+        android:id="@+id/deleteExcursions"/>
 </menu>

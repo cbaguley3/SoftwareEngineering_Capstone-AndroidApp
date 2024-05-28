@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,11 +33,14 @@ public class VacationDetails extends AppCompatActivity {
     int vacationID;
     EditText editName;
     EditText editLodging;
-    EditText editStartDate;
-    EditText editEndDate;
+    TextView editStartDate;
+    TextView editEndDate;
     Repository repository;
     Vacation currentVacation;
     int numExcursions;
+    Excursion excursionName;
+    Excursion excursionDate;
+    Excursion currentExcursion;
 
 
     @Override
@@ -44,8 +48,15 @@ public class VacationDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vacation_details);
         vacationName = getIntent().getStringExtra("name");
-        editName = findViewById(R.id.vacationname);
+        editName = findViewById(R.id.vacationName);
         editName.setText(vacationName);
+        lodging = getIntent().getStringExtra("lodging");
+        editLodging = findViewById(R.id.lodging);
+        editLodging.setText((lodging));
+        editStartDate = findViewById(R.id.startDate);
+        editStartDate.setText(startDate);
+        editEndDate = findViewById(R.id.endDate);
+        editEndDate.setText(endDate);
         vacationID = getIntent().getIntExtra("id", -1);
         // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -80,10 +91,11 @@ public class VacationDetails extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if(item.getItemId()== android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             this.finish();
-            return true;}
-        if(item.getItemId()== R.id.vacationsave){
+            return true;
+        }
+        if (item.getItemId() == R.id.vacationsave) {
             Vacation vacation;
             if (vacationID == -1) {
                 if (repository.getmAllVacations().isEmpty()) vacationID = 1;
@@ -92,45 +104,54 @@ public class VacationDetails extends AppCompatActivity {
                 vacation = new Vacation(vacationID, editName.getText().toString(), editLodging.getText().toString(), editStartDate.getText().toString(), editEndDate.getText().toString());
                 repository.insert(vacation);
             } else {
-                try{
+                try {
                     vacation = new Vacation(vacationID, editName.getText().toString(), editLodging.getText().toString(), editStartDate.getText().toString(), editEndDate.getText().toString());
-                    repository.update(vacation);}
-                catch (Exception e){
+                    repository.update(vacation);
+                } catch (Exception e) {
 
                 }
             }
-            return true;}
-        if(item.getItemId()== R.id.vacationdelete) {
+            return true;
+        }
+        if (item.getItemId() == R.id.vacationdelete) {
             for (Vacation vacation : repository.getmAllVacations()) {
                 if (vacation.getVacationID() == vacationID) currentVacation = vacation;
             }
 
             numExcursions = 0;
             for (Excursion excursion : repository.getmAllExcursions()) {
-                if (excursion.getVacationID() == vacationID) ++ numExcursions;
+                if (excursion.getVacationID() == vacationID) ++numExcursions;
             }
 
             if (numExcursions == 0) {
                 repository.delete(currentVacation);
                 Toast.makeText(VacationDetails.this, currentVacation.getVacationName() + " was deleted", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(VacationDetails.this, "Can't delete a product with parts", Toast.LENGTH_LONG).show();
+                Toast.makeText(VacationDetails.this, "Can't delete a vacation with excursions", Toast.LENGTH_LONG).show();
             }
             return true;
         }
-        if(item.getItemId()== R.id.addExcursions){
+        if (item.getItemId() == R.id.addExcursions) {
             if (vacationID == -1)
-                Toast.makeText(VacationDetails.this, "Please save product before adding parts", Toast.LENGTH_LONG).show();
+                Toast.makeText(VacationDetails.this, "Please save vacation before adding excursions", Toast.LENGTH_LONG).show(); }
+        if (item.getItemId() == R.id.deleteExcursions) {
+            for (Excursion excursion : repository.getmAllExcursions()) {
+                if (excursion.getVacationID() == vacationID) currentExcursion = excursion;
+                repository.delete(excursion);
+                Toast.makeText(VacationDetails.this, currentExcursion.getExcursionName() + " was deleted", Toast.LENGTH_LONG).show();
+            }
+
+        }
 
             else {
-                int partID;
+                int excursionID;
 
-                if (repository.getmAllExcursions().size() == 0) partID = 1;
+                if (repository.getmAllExcursions().size() == 0) excursionID = 1;
                 else
-                    partID = repository.getmAllExcursions().get(repository.getmAllExcursions().size() - 1).getExcursionID() + 1;
-                Excursion excursion = new Excursion(partID, "Zip-Lining", "09/25/24", vacationID);
+                    excursionID = repository.getmAllExcursions().get(repository.getmAllExcursions().size() - 1).getExcursionID() + 1;
+                Excursion excursion = new Excursion(excursionID, excursionName.getExcursionName(), excursionDate.getDate(), vacationID);
                 repository.insert(excursion);
-                excursion = new Excursion(++partID, "Snorkeling", "09/25/24", vacationID);
+                excursion = new Excursion(++excursionID, excursionName.getExcursionName(), excursionDate.getDate(), vacationID);
                 repository.insert(excursion);
                 RecyclerView recyclerView = findViewById(R.id.excursionrecyclerview);
                 final ExcursionAdaptor excursionAdaptor = new ExcursionAdaptor(this);
@@ -138,13 +159,13 @@ public class VacationDetails extends AppCompatActivity {
                 recyclerView.setLayoutManager(new LinearLayoutManager(this));
                 List<Excursion> filteredExcursions = new ArrayList<>();
                 for (Excursion excursion2 : repository.getmAllExcursions()) {
-                    if (excursion2.getVacationID() == vacationID) filteredExcursions.add(excursion2);
+                    if (excursion2.getVacationID() == vacationID)
+                        filteredExcursions.add(excursion2);
                 }
                 excursionAdaptor.setExcursions(filteredExcursions);
                 return true;
             }
-        }
-        return super.onOptionsItemSelected(item);
+            return super.onOptionsItemSelected(item);
     }
 
 

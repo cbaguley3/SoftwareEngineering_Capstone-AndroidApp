@@ -22,6 +22,7 @@
 
     <ScrollView
         android:id="@+id/scrollview"
+        android:layout_margin="24dp"
         android:layout_width="409dp"
         android:layout_height="200dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -43,10 +44,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vacation Name:" />
+                    android:text="Vacation Name:"
+                    android:textStyle="bold" />
 
                 <EditText
-                    android:id="@+id/vacationname"
+                    android:id="@+id/vacationName"
                     android:layout_width="253dp"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -58,7 +60,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lodging:" />
+                    android:text="Lodging:"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/lodging"
@@ -73,12 +76,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Start Date:" />
+                    android:text="Start Date:"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/startDate"
                     android:layout_width="285dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textStyle="italic" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -88,12 +93,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="End Date:" />
+                    android:text="End Date:"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/endDate"
                     android:layout_width="289dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textStyle="italic" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -102,9 +109,10 @@
         android:id="@+id/excursionrecyclerview"
         android:layout_width="409dp"
         android:layout_height="464dp"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="201dp"
+        android:layout_margin="24dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollview"/>
+        app:layout_constraintTop_toBottomOf="@+id/scrollview" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -54,11 +54,13 @@ public class ExcursionDetails extends AppCompatActivity {
             vacationID = getIntent().getIntExtra("vacationID", -1);
             editNote=findViewById(R.id.note);
             editDate=findViewById(R.id.date);
-            String myFormat = "MM/dd/yy"; //In which you need put here
+            String myFormat = "MM/dd/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-            ArrayList<Vacation> productArrayList= new ArrayList<>();
-            productArrayList.addAll(repository.getmAllVacations());
+
+            editDate.setText(sdf.format(myCalendarStart.getTime()));
+
+            ArrayList<Vacation> productArrayList = new ArrayList<>(repository.getmAllVacations());
             ArrayList<Integer> vacationIdList= new ArrayList<>();
             for(Vacation vacation:productArrayList){
                 vacationIdList.add(vacation.getVacationID());
@@ -92,7 +94,7 @@ public class ExcursionDetails extends AppCompatActivity {
                     Date date;
 
                     String info=editDate.getText().toString();
-                    if(info.equals(""))info="02/10/22";
+                    if(info.equals(""))info="05/01/24";
                     try{
                         myCalendarStart.setTime(sdf.parse(info));
                     } catch (ParseException e) {
@@ -126,7 +128,7 @@ public class ExcursionDetails extends AppCompatActivity {
             }
 
             // return true;
-//                Intent intent=new Intent(PartDetails.this,MainActivity.class);
+//                Intent intent=new Intent(ExcursionDetails.this,MainActivity.class);
 //                startActivity(intent);
 //                return true;
 
@@ -147,8 +149,8 @@ public class ExcursionDetails extends AppCompatActivity {
             if (item.getItemId()== R.id.share) {
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString());
-                sendIntent.putExtra(Intent.EXTRA_TITLE, "Message Title");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString() + "EXTRA_TEXT");
+                sendIntent.putExtra(Intent.EXTRA_TITLE, editNote.getText().toString() + "EXTRA TITLE");
                 sendIntent.setType("text/plain");
                 Intent shareIntent = Intent.createChooser(sendIntent, null);
                 startActivity(shareIntent);
@@ -156,7 +158,7 @@ public class ExcursionDetails extends AppCompatActivity {
             }
             if(item.getItemId()== R.id.notify) {
                 String dateFromScreen = editDate.getText().toString();
-                String myFormat = "MM/dd/yy"; //In which you need put here
+                String myFormat = "MM/dd/yy";
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
                 Date myDate = null;
                 try {
@@ -167,8 +169,8 @@ public class ExcursionDetails extends AppCompatActivity {
                 try{
                     Long trigger = myDate.getTime();
                     Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-                    intent.putExtra("key", "message I want to see");
-                    PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
+                    intent.putExtra("key", excursionName + " Today");
+                    PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);}
                 catch (Exception e){

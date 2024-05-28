@@ -17,15 +17,17 @@
         <receiver
             android:name=".UI.MyReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
-        <activity
-            android:name=".activity_excursion_details"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".UI.VacationDetails"
             android:exported="false"
-            android:label="Vacation Details and Excursions List"
+            android:label="Vacation Details and Excursions"
             android:parentActivityName=".UI.VacationList" />
+        <activity
+            android:name=".UI.ExcursionDetails"
+            android:exported="false"
+            android:label="Excursion Details"
+            android:parentActivityName=".UI.VacationList"/>
         <activity
             android:name=".UI.VacationList"
             android:exported="false"

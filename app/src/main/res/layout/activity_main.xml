@@ -7,20 +7,28 @@
     android:layout_height="match_parent"
     tools:context=".UI.MainActivity">
 
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="230dp"
+        android:src="@drawable/snowflake"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="150dp"
         android:layout_marginEnd="16dp"
         android:text="Snowflake"
         android:textSize="34sp"
         android:textStyle="bold|italic"
         android:typeface="serif"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,19 +56,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="198dp"
-        android:layout_height="238dp"
-        android:layout_marginStart="106dp"
-        android:layout_marginTop="304dp"
-        android:layout_marginEnd="107dp"
-        android:layout_marginBottom="304dp"
-        android:src="@drawable/snowflake"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

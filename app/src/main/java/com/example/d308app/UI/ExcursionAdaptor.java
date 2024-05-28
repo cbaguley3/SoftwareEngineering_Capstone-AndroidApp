@@ -1,10 +1,12 @@
 package com.example.d308app.UI;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,14 +19,22 @@ import java.util.List;
 
 public class ExcursionAdaptor extends RecyclerView.Adapter<ExcursionAdaptor.ExcursionViewHolder> {
 
+    private List<ClipData.Item> itemList;
 
-    class ExcursionViewHolder extends RecyclerView.ViewHolder{
+    public AdapterView.OnItemClickListener clickListener;
+
+    public void setClickListener(AdapterView.OnItemClickListener myListener) {
+        this.clickListener = myListener;
+    }
+
+    public class ExcursionViewHolder extends RecyclerView.ViewHolder{
         private final TextView excursionItemView;
         private final TextView excursionItemView2;
-        private ExcursionViewHolder(View itemView){
+        public ExcursionViewHolder(@NonNull View itemView){
             super(itemView);
-            excursionItemView=itemView.findViewById(R.id.textView3);
-            excursionItemView2=itemView.findViewById(R.id.textView4);
+            excursionItemView = itemView.findViewById(R.id.textView3);
+            excursionItemView2 = itemView.findViewById(R.id.textView4);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -32,7 +42,8 @@ public class ExcursionAdaptor extends RecyclerView.Adapter<ExcursionAdaptor.Excu
                     final Excursion current=mExcursions.get(position);
                     Intent intent=new Intent(context,ExcursionDetails.class);
                     intent.putExtra("id", current.getExcursionID());
-                    intent.putExtra("name", current.getExcursionName());
+                    String excursionName;
+                    intent.putExtra("name", excursionName = excursionItemView.getText().toString());
                     intent.putExtra("date", current.getDate());
                     intent.putExtra("vacationID",current.getVacationID());
                     context.startActivity(intent);
@@ -51,7 +62,7 @@ public class ExcursionAdaptor extends RecyclerView.Adapter<ExcursionAdaptor.Excu
     @NonNull
     @Override
     public ExcursionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView=mInflater.inflate(R.layout.excursion_list_item,parent,false);
+        View itemView=mInflater.from(parent.getContext()).inflate(R.layout.excursion_list_item,parent,false);
         return new ExcursionViewHolder(itemView);
     }
 
@@ -65,8 +76,8 @@ public class ExcursionAdaptor extends RecyclerView.Adapter<ExcursionAdaptor.Excu
             holder.excursionItemView2.setText(Integer.toString(vacationID));
         }
         else{
-            holder.excursionItemView.setText("No part name");
-            holder.excursionItemView.setText("No product id");
+            holder.excursionItemView.setText("No excursion name");
+            holder.excursionItemView.setText("No vacation id");
         }
     }
 
@@ -77,7 +88,6 @@ public class ExcursionAdaptor extends RecyclerView.Adapter<ExcursionAdaptor.Excu
 
     @Override
     public int getItemCount() {
-
         if(mExcursions!=null) return mExcursions.size();
         else return 0;
     }

@@ -5,6 +5,4 @@
         android:id="@+id/sample"/>
     <item android:title="Vacation"
         android:id="@+id/Vacation"/>
-
-
 </menu>

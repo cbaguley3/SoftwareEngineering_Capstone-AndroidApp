@@ -1,5 +1,6 @@
 package com.example.d308app.entities;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -62,5 +63,10 @@ public class Vacation {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public String toString() {
+        return vacationName;
+
     }
 }

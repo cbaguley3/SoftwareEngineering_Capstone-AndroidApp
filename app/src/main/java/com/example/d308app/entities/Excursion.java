@@ -7,9 +7,7 @@ public class Excursion {
     @PrimaryKey(autoGenerate = true)
     private int excursionID;
     private String excursionName;
-
     private String date;
-
     private int vacationID;
 
 
@@ -40,6 +38,7 @@ public class Excursion {
         this.excursionName = excursionName;
     }
 
+
     public String getDate() {
         return date;
     }
@@ -54,5 +53,9 @@ public class Excursion {
 
     public void setVacationID(int vacationID) {
         this.vacationID = vacationID;
+    }
+
+    public String toString() {
+        return date;
     }
 }

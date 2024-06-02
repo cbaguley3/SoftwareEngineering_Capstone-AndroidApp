@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">D308 App</string>
-
+    <string name="dateFormat">mm/dd/yy</string>
 </resources>

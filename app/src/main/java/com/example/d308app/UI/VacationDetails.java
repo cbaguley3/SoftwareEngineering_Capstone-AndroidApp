@@ -4,6 +4,8 @@ package com.example.d308app.UI;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +23,12 @@ import com.example.d308app.entities.Excursion;
 import com.example.d308app.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class VacationDetails extends AppCompatActivity {
@@ -53,6 +59,8 @@ public class VacationDetails extends AppCompatActivity {
         lodging = getIntent().getStringExtra("lodging");
         editLodging = findViewById(R.id.lodging);
         editLodging.setText((lodging));
+        startDate = getIntent().getStringExtra("startDate");
+        endDate = getIntent().getStringExtra("endDate");
         editStartDate = findViewById(R.id.startDate);
         editStartDate.setText(startDate);
         editEndDate = findViewById(R.id.endDate);
@@ -71,7 +79,7 @@ public class VacationDetails extends AppCompatActivity {
         }
         excursionAdapter.setExcursions(filteredExcursions);
 
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
+        FloatingActionButton fab = findViewById(R.id.addExcursions);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +89,71 @@ public class VacationDetails extends AppCompatActivity {
             }
         });
 
+        // Add TextWatcher to editStartDate
+        editStartDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validate the date format when the text changes
+                if (!isValidDate(s.toString())) {
+                    editStartDate.setError("Invalid date format. Use MM/dd/yy");
+                } else {
+                    editStartDate.setError(null); // Clear the error
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
+        });
+
+        // Add TextWatcher to editEndDate
+        editEndDate.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Validate the date format when the text changes
+                if (!isValidDate(s.toString())) {
+                    editEndDate.setError("Invalid date format. Use MM/dd/yy");
+                } else {
+                    editEndDate.setError(null); // Clear the error
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // No action needed here
+            }
+        });
     }
+
+    // Method to validate date format
+    private boolean isValidDate(String date) {
+        String datePattern = "^\\d{2}/\\d{2}/\\d{2}$";
+        return date.matches(datePattern);
+    }
+
+    private boolean isEndDateAfterStartDate(String startDate, String endDate) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+        try {
+            Date start = sdf.parse(startDate);
+            Date end = sdf.parse(endDate);
+            return end.after(start);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacationdetails, menu);
@@ -132,15 +204,19 @@ public class VacationDetails extends AppCompatActivity {
             return true;
         }
         if (item.getItemId() == R.id.addExcursions) {
-            if (vacationID == -1)
-                Toast.makeText(VacationDetails.this, "Please save vacation before adding excursions", Toast.LENGTH_LONG).show(); }
-        if (item.getItemId() == R.id.deleteExcursions) {
-            for (Excursion excursion : repository.getmAllExcursions()) {
-                if (excursion.getVacationID() == vacationID) currentExcursion = excursion;
-                repository.delete(excursion);
-                Toast.makeText(VacationDetails.this, currentExcursion.getExcursionName() + " was deleted", Toast.LENGTH_LONG).show();
+            if (vacationID == -1) {
+                Toast.makeText(VacationDetails.this, "Please save vacation before adding excursions", Toast.LENGTH_LONG).show();
+                return true; // Return after showing the toast message
             }
-
+        } else if (item.getItemId() == R.id.deleteExcursions) {
+            for (Excursion excursion : repository.getmAllExcursions()) {
+                if (excursion.getVacationID() == vacationID) {
+                    currentExcursion = excursion;
+                    repository.delete(excursion);
+                    Toast.makeText(VacationDetails.this, currentExcursion.getExcursionName() + " was deleted", Toast.LENGTH_LONG).show();
+                }
+            }
+            return true; // Return after processing the delete action
         }
 
             else {

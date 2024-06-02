@@ -12,18 +12,22 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.d308app.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
     public static int numAlert;
+
+    public FloatingActionButton floatingActionButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        Button button =findViewById(R.id.button);
+        Button button = findViewById(R.id.button);
         button.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this,VacationList.class);
+            Intent intent = new Intent(MainActivity.this, VacationList.class);
             intent.putExtra("test", "information sent");
             startActivity(intent);
         });

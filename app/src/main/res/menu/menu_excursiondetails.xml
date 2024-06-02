@@ -3,7 +3,9 @@
 
         <item android:title="Save Excursion"
             android:id="@+id/excursionsave"/>
-        <item android:title="Share Note"
+        <item android:title="Delete Excursion"
+                android:id="@+id/deleteExcursion"/>
+        <item android:title="Share"
             android:orderInCategory="100"
             android:id="@+id/share"/>
         <item android:title="Notify"

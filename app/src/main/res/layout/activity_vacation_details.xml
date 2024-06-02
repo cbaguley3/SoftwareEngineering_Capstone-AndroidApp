@@ -8,7 +8,7 @@
     tools:context=".UI.VacationDetails">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/addExcursions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -77,6 +77,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start Date:"
+                    android:hint="@string/dateFormat"
                     android:textStyle="bold" />
 
                 <EditText
@@ -94,6 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="End Date:"
+                    android:hint="@string/dateFormat"
                     android:textStyle="bold" />
 
                 <EditText
@@ -107,12 +109,42 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/excursionrecyclerview"
-        android:layout_width="409dp"
-        android:layout_height="464dp"
+        android:layout_width="318dp"
+        android:layout_height="392dp"
         android:layout_margin="24dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="106dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollview" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="310dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="32dp"
+        android:text="Add Excursion"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/addExcursions"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginStart="196dp"
+        android:layout_marginEnd="195dp"
+        android:layout_marginBottom="5dp"
+        android:text="Excursions"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/excursionrecyclerview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollview" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

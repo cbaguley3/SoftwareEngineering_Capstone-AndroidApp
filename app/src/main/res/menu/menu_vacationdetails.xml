@@ -5,8 +5,12 @@
         android:id="@+id/vacationsave"/>
     <item android:title="Delete Vacation"
         android:id="@+id/vacationdelete"/>
-    <item android:title="Add Excursion"
-        android:id="@+id/addExcursions"/>
     <item android:title="Delete All Excursions"
         android:id="@+id/deleteExcursions"/>
+    <item android:title="Share"
+        android:orderInCategory="100"
+        android:id="@+id/share"/>
+    <item android:title="Notify"
+        android:orderInCategory="100"
+        android:id="@+id/notify"/>
 </menu>

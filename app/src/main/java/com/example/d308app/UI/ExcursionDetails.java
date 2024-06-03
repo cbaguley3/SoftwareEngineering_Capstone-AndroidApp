@@ -183,7 +183,6 @@ public class ExcursionDetails extends AppCompatActivity {
                 String vacationStartDate = vacation.getStartDate();
                 String vacationEndDate = vacation.getEndDate();
 
-
                 // Check if excursion date is within vacation period
                 if (!isDateWithinVacationPeriod(excursionDate, vacationStartDate, vacationEndDate)) {
                     Toast.makeText(this, "Excursion date must be within the vacation period.", Toast.LENGTH_LONG).show();
@@ -205,18 +204,18 @@ public class ExcursionDetails extends AppCompatActivity {
                 repository.delete(excursion);
                 Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionName() + " was deleted", Toast.LENGTH_LONG).show();
             }
+            return true; // Added return statement to prevent falling through
         }
         if (item.getItemId() == R.id.share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            String formattedText = String.format("Excursion: %s\nDate: %s Note: %s", excursionName, date, note);
+            String formattedText = String.format("Excursion: %s\nDate: %s\nNote: %s", excursionName, date, note);
             sendIntent.putExtra(Intent.EXTRA_TEXT, formattedText);
-
             sendIntent.putExtra(Intent.EXTRA_TITLE, vacationName);
             sendIntent.setType("text/plain");
             Intent shareIntent = Intent.createChooser(sendIntent, null);
             startActivity(shareIntent);
-            return true;
+            return true; // Added return statement to prevent falling through
         }
         if (item.getItemId() == R.id.notify) {
             String dateFromScreen = editDate.getText().toString();
@@ -228,17 +227,15 @@ public class ExcursionDetails extends AppCompatActivity {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            try {
+            if (myDate != null) {
                 Long trigger = myDate.getTime();
                 Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
                 intent.putExtra("key", excursionName + " Today");
                 PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-            return true;
+            return true; // Added return statement to prevent falling through
         }
 
         return super.onOptionsItemSelected(item);

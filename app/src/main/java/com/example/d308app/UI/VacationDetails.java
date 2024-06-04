@@ -177,17 +177,27 @@ public class VacationDetails extends AppCompatActivity {
 
     private void saveVacation() {
         Vacation vacation;
+        String name = editName.getText().toString();
+        String lodging = editLodging.getText().toString();
+        String startDate = editStartDate.getText().toString();
+        String endDate = editEndDate.getText().toString();
+
+        if (!isEndDateAfterStartDate(startDate, endDate)) {
+            Toast.makeText(this, "End date must be after start date", Toast.LENGTH_LONG).show();
+            return; // Prevent saving
+        }
+
         if (vacationID == -1) {
             if (repository.getmAllVacations().isEmpty()) {
                 vacationID = 1;
             } else {
                 vacationID = repository.getmAllVacations().get(repository.getmAllVacations().size() - 1).getVacationID() + 1;
             }
-            vacation = new Vacation(vacationID, editName.getText().toString(), editLodging.getText().toString(), editStartDate.getText().toString(), editEndDate.getText().toString());
+            vacation = new Vacation(vacationID, name, lodging, startDate, endDate);
             repository.insert(vacation);
         } else {
             try {
-                vacation = new Vacation(vacationID, editName.getText().toString(), editLodging.getText().toString(), editStartDate.getText().toString(), editEndDate.getText().toString());
+                vacation = new Vacation(vacationID, name, lodging, startDate, endDate);
                 repository.update(vacation);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -197,6 +207,7 @@ public class VacationDetails extends AppCompatActivity {
         }
         Toast.makeText(this, vacation.getVacationName() + " saved", Toast.LENGTH_SHORT).show();
     }
+
 
 
     private void deleteVacation() {

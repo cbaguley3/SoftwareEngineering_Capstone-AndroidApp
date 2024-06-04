@@ -178,9 +178,11 @@ public class VacationDetails extends AppCompatActivity {
     private void saveVacation() {
         Vacation vacation;
         if (vacationID == -1) {
-            if (repository.getmAllVacations().isEmpty()) vacationID = 1;
-            else
+            if (repository.getmAllVacations().isEmpty()) {
+                vacationID = 1;
+            } else {
                 vacationID = repository.getmAllVacations().get(repository.getmAllVacations().size() - 1).getVacationID() + 1;
+            }
             vacation = new Vacation(vacationID, editName.getText().toString(), editLodging.getText().toString(), editStartDate.getText().toString(), editEndDate.getText().toString());
             repository.insert(vacation);
         } else {
@@ -190,9 +192,12 @@ public class VacationDetails extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(this, "Error updating vacation", Toast.LENGTH_SHORT).show();
+                return;
             }
         }
+        Toast.makeText(this, vacation.getVacationName() + " saved", Toast.LENGTH_SHORT).show();
     }
+
 
     private void deleteVacation() {
         for (Vacation vacation : repository.getmAllVacations()) {

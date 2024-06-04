@@ -139,14 +139,13 @@ public class ExcursionDetails extends AppCompatActivity {
     }
 
     // Method to check if the date is within the vacation period
-    private boolean isDateWithinVacationPeriod(String date, String vacationStartDate, String vacationEndDate) {
+    private boolean isDateWithinVacationPeriod(String excursionDate, String vacationStartDate, String vacationEndDate) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
         try {
-            Date excursionDate = sdf.parse(date);
-            Date startDate = sdf.parse(vacationStartDate);
-            Date endDate = sdf.parse(vacationEndDate);
-            return (excursionDate.equals(startDate) || excursionDate.equals(endDate) ||
-                    (excursionDate.after(startDate) && excursionDate.before(endDate)));
+            Date excursion = sdf.parse(excursionDate);
+            Date start = sdf.parse(vacationStartDate);
+            Date end = sdf.parse(vacationEndDate);
+            return (excursion != null && excursion.compareTo(start) >= 0 && excursion.compareTo(end) <= 0);
         } catch (ParseException e) {
             e.printStackTrace();
             return false;
@@ -169,16 +168,24 @@ public class ExcursionDetails extends AppCompatActivity {
         if (item.getItemId() == R.id.excursionsave) {
             Excursion excursion;
             if (excursionID == -1) {
-                if (repository.getmAllExcursions().isEmpty())
+                if (repository.getmAllExcursions().isEmpty()) {
                     excursionID = 1;
-                else
+                } else {
                     excursionID = repository.getmAllExcursions().get(repository.getmAllExcursions().size() - 1).getExcursionID() + 1;
+                }
             }
 
             String excursionDate = editDate.getText().toString();
 
             // Get vacation details for validation
-            Vacation vacation = repository.getmAllVacations().get(vacationID);
+            Vacation vacation = null;
+            for (Vacation v : repository.getmAllVacations()) {
+                if (v.getVacationID() == vacationID) {
+                    vacation = v;
+                    break;
+                }
+            }
+
             if (vacation != null) {
                 String vacationStartDate = vacation.getStartDate();
                 String vacationEndDate = vacation.getEndDate();
@@ -190,12 +197,23 @@ public class ExcursionDetails extends AppCompatActivity {
                 }
             }
 
-            excursion = new Excursion(excursionID, editName.getText().toString(), excursionDate, vacationID);
-            if (excursionID == -1) {
-                repository.insert(excursion);
-            } else {
-                repository.update(excursion);
+            // Save the excursion if the date is valid
+            try {
+                excursion = new Excursion(excursionID, editName.getText().toString(), excursionDate, vacationID);
+                if (excursionID == -1) {
+                    repository.insert(excursion);
+                } else {
+                    repository.update(excursion);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error saving excursion", Toast.LENGTH_SHORT).show();
+                return false;
             }
+
+            Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ExcursionDetails.this, VacationList.class);
+            startActivity(intent);
             return true;
         }
         if (item.getItemId() == R.id.deleteExcursion) {

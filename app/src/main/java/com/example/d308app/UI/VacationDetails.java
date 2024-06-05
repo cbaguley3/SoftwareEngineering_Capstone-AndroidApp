@@ -1,5 +1,8 @@
 package com.example.d308app.UI;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -172,6 +175,37 @@ public class VacationDetails extends AppCompatActivity {
             deleteExcursions();
             return true;
         }
+        if (item.getItemId() == R.id.share) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            String formattedText = String.format("Lodging:%s\nDate: %s - %s", lodging, startDate, endDate);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, formattedText);
+            sendIntent.putExtra(Intent.EXTRA_TITLE, vacationName);
+            sendIntent.setType("text/plain");
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
+            return true; // Added return statement to prevent falling through
+        }
+        if (item.getItemId() == R.id.notify) {
+            String dateFromScreen = editStartDate.getText().toString();
+            String myFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            Date myDate = null;
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (myDate != null) {
+                Long trigger = myDate.getTime();
+                Intent intent = new Intent(VacationDetails.this, MyReceiver.class);
+                intent.putExtra("key", vacationName + " Today");
+                PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+            }
+            return true; // Added return statement to prevent falling through
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -209,7 +243,6 @@ public class VacationDetails extends AppCompatActivity {
     }
 
 
-
     private void deleteVacation() {
         for (Vacation vacation : repository.getmAllVacations()) {
             if (vacation.getVacationID() == vacationID) currentVacation = vacation;
@@ -239,11 +272,26 @@ public class VacationDetails extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
         setupRecyclerView();
+//        refreshExcursionList();
     }
+
+
+//    private void refreshExcursionList() {
+//        RecyclerView recyclerView = findViewById(R.id.excursionrecyclerview);
+//        final ExcursionAdaptor excursionAdaptor = new ExcursionAdaptor(this);
+//        recyclerView.setAdapter(excursionAdaptor);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        List<Excursion> filteredExcursions = new ArrayList<>();
+//        for (Excursion excursion : repository.getmAllExcursions()) {
+//            if (excursion.getVacationID() == vacationID) {
+//                filteredExcursions.add(excursion);
+//            }
+//        }
+//        excursionAdaptor.setExcursions(filteredExcursions);
+//    }
+
 }

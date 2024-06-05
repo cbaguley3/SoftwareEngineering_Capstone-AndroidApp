@@ -72,6 +72,13 @@ public class ExcursionDetails extends AppCompatActivity {
         ArrayList<Vacation> vacationArrayList = new ArrayList<>(repository.getmAllVacations());
         ArrayAdapter<Vacation> vacationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacationArrayList);
 
+        ArrayList<Integer> vacationIDList = new ArrayList<>();
+        for(Vacation vacation:vacationArrayList){
+            vacationIDList.add(vacation.getVacationID());
+        }
+        ArrayAdapter<Integer> vacationIDAdapter= new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item,vacationIDList);
+
+
         Spinner spinner = findViewById(R.id.spinner);
         spinner.setAdapter(vacationAdapter);
         spinner.setSelection(0);
@@ -168,12 +175,16 @@ public class ExcursionDetails extends AppCompatActivity {
         if (item.getItemId() == R.id.excursionsave) {
             Excursion excursion;
             if (excursionID == -1) {
-                if (repository.getmAllExcursions().isEmpty()) {
+                if (repository.getmAllExcursions().isEmpty())
                     excursionID = 1;
-                } else {
+                else
                     excursionID = repository.getmAllExcursions().get(repository.getmAllExcursions().size() - 1).getExcursionID() + 1;
+                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), vacationID);
+                    repository.insert(excursion);
+                } else {
+                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), vacationID);
+                    repository.insert(excursion);
                 }
-            }
 
             String excursionDate = editDate.getText().toString();
 

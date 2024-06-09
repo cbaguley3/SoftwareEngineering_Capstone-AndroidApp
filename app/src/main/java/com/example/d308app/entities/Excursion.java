@@ -1,4 +1,5 @@
 package com.example.d308app.entities;
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -55,7 +56,13 @@ public class Excursion {
         this.vacationID = vacationID;
     }
 
+    @NonNull
     public String toString() {
         return date;
+    }
+
+    public String getNote() {
+
+        return toString();
     }
 }

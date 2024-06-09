@@ -31,13 +31,13 @@ public class VacationList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_list);
-        FloatingActionButton fab=findViewById(R.id.floatingActionButton);
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
 
         fab.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            Intent intent= new Intent(VacationList.this, VacationDetails.class);
-            startActivity(intent);
+                Intent intent = new Intent(VacationList.this, VacationDetails.class);
+                startActivity(intent);
             }
         }));
 
@@ -56,6 +56,7 @@ public class VacationList extends AppCompatActivity {
         vacationAdaptor.setVacations(allVacations);
         // System.out.println(getIntent().getStringExtra("test"));
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacation_list, menu);
@@ -64,24 +65,13 @@ public class VacationList extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.sample) {
-            repository=new Repository(getApplication());
-           // Toast.makeText(VacationList.this,"put in sample data",Toast.LENGTH_LONG).show();
-            Vacation vacation= new Vacation(0, "San Francisco", "SF Hotel Downtown","07/08/24","07/12/24");
-            repository.insert(vacation);
-            vacation = new Vacation(1, "Miami", "Ocean Drive Hotel", "09/22/24","09/25/24");
-            repository.insert(vacation);
-            Excursion excursion = new Excursion(0,"Fishing Boat","9/23/24",1);
-            repository.insert(excursion);
-            excursion = new Excursion(1,"Beach Resort", "09/24/24", 1);
-            repository.insert(excursion);
-
+        if (item.getItemId() == android.R.id.home) {
+            Intent intent = new Intent(this, MainActivity.class);
+            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear the back stack and start a new task
+            startActivity(intent);
+            finish(); // Close the current activity
             return true;
         }
-        if(item.getItemId()==android.R.id.home) {
-            this.finish();
-            return true;
-        }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -52,7 +52,7 @@ public class ExcursionDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excursion_details);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         repository = new Repository(getApplication());
         excursionName = getIntent().getStringExtra("name");
         date = getIntent().getStringExtra("date");
@@ -62,22 +62,22 @@ public class ExcursionDetails extends AppCompatActivity {
         excursionID = getIntent().getIntExtra("excursionID", -1);
         vacationID = getIntent().getIntExtra("vacationID", -1);
         editNote = findViewById(R.id.note);
+        editNote.setText(note);
         editDate = findViewById(R.id.date);
+        editDate.setText(date);
 
         String myFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-
         editDate.setText(sdf.format(myCalendarStart.getTime()));
 
         ArrayList<Vacation> vacationArrayList = new ArrayList<>(repository.getmAllVacations());
         ArrayAdapter<Vacation> vacationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacationArrayList);
 
         ArrayList<Integer> vacationIDList = new ArrayList<>();
-        for(Vacation vacation:vacationArrayList){
+        for (Vacation vacation : vacationArrayList) {
             vacationIDList.add(vacation.getVacationID());
         }
-        ArrayAdapter<Integer> vacationIDAdapter= new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item,vacationIDList);
-
+        ArrayAdapter<Integer> vacationIDAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacationIDList);
 
         Spinner spinner = findViewById(R.id.spinner);
         spinner.setAdapter(vacationAdapter);
@@ -131,6 +131,11 @@ public class ExcursionDetails extends AppCompatActivity {
                 // No action needed here
             }
         });
+
+        // Load existing excursion details if editing
+        if (excursionID != -1) {
+            loadExcursionDetails(excursionID);
+        }
     }
 
     private void updateLabelStart() {
@@ -159,6 +164,15 @@ public class ExcursionDetails extends AppCompatActivity {
         }
     }
 
+    private void loadExcursionDetails(int excursionID) {
+        Excursion excursion = repository.getExcursionByID(excursionID);
+        if (excursion != null) {
+            editName.setText(excursion.getExcursionName());
+            editDate.setText(excursion.getDate());
+            editNote.setText(excursion.getNote());
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_excursiondetails, menu);
@@ -167,106 +181,113 @@ public class ExcursionDetails extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            this.finish();
+        int id = item.getItemId();
+
+        if (id == R.id.excursionsave) {
+            saveNewExcursion();
             return true;
         }
 
-        if (item.getItemId() == R.id.excursionsave) {
-            Excursion excursion;
-            if (excursionID == -1) {
-                if (repository.getmAllExcursions().isEmpty())
-                    excursionID = 1;
-                else
-                    excursionID = repository.getmAllExcursions().get(repository.getmAllExcursions().size() - 1).getExcursionID() + 1;
-                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), vacationID);
-                    repository.insert(excursion);
-                } else {
-                    excursion = new Excursion(excursionID, editName.getText().toString(), editDate.getText().toString(), vacationID);
-                    repository.insert(excursion);
-                }
-
-            String excursionDate = editDate.getText().toString();
-
-            // Get vacation details for validation
-            Vacation vacation = null;
-            for (Vacation v : repository.getmAllVacations()) {
-                if (v.getVacationID() == vacationID) {
-                    vacation = v;
-                    break;
-                }
-            }
-
-            if (vacation != null) {
-                String vacationStartDate = vacation.getStartDate();
-                String vacationEndDate = vacation.getEndDate();
-
-                // Check if excursion date is within vacation period
-                if (!isDateWithinVacationPeriod(excursionDate, vacationStartDate, vacationEndDate)) {
-                    Toast.makeText(this, "Excursion date must be within the vacation period.", Toast.LENGTH_LONG).show();
-                    return false; // Prevent saving
-                }
-            }
-
-            // Save the excursion if the date is valid
-            try {
-                excursion = new Excursion(excursionID, editName.getText().toString(), excursionDate, vacationID);
-                if (excursionID == -1) {
-                    repository.insert(excursion);
-                } else {
-                    repository.update(excursion);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Error saving excursion", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(ExcursionDetails.this, VacationList.class);
-            startActivity(intent);
+        if (id == R.id.deleteExcursion) {
+            deleteExcursion();
             return true;
         }
-        if (item.getItemId() == R.id.deleteExcursion) {
-            for (Excursion excursion : repository.getmAllExcursions()) {
-                if (excursion.getExcursionID() == excursionID) currentExcursion = excursion;
-                repository.delete(excursion);
-                Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionName() + " was deleted", Toast.LENGTH_LONG).show();
-            }
-            return true; // Added return statement to prevent falling through
+
+        if (id == R.id.share) {
+            shareExcursion();
+            return true;
         }
-        if (item.getItemId() == R.id.share) {
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            String formattedText = String.format("Excursion: %s\nDate: %s\nNote: %s", excursionName, date, note);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, formattedText);
-            sendIntent.putExtra(Intent.EXTRA_TITLE, vacationName);
-            sendIntent.setType("text/plain");
-            Intent shareIntent = Intent.createChooser(sendIntent, null);
-            startActivity(shareIntent);
-            return true; // Added return statement to prevent falling through
-        }
-        if (item.getItemId() == R.id.notify) {
-            String dateFromScreen = editDate.getText().toString();
-            String myFormat = "MM/dd/yy";
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            Date myDate = null;
-            try {
-                myDate = sdf.parse(dateFromScreen);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (myDate != null) {
-                Long trigger = myDate.getTime();
-                Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-                intent.putExtra("key", excursionName + " Today");
-                PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
-            }
-            return true; // Added return statement to prevent falling through
+
+        if (id == R.id.notify) {
+            setNotification();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveNewExcursion() {
+        String excursionDate = editDate.getText().toString();
+
+        // Get vacation details for validation
+        Vacation vacation = null;
+        for (Vacation v : repository.getmAllVacations()) {
+            if (v.getVacationID() == vacationID) {
+                vacation = v;
+                break;
+            }
+        }
+
+        if (vacation != null) {
+            String vacationStartDate = vacation.getStartDate();
+            String vacationEndDate = vacation.getEndDate();
+
+            // Check if excursion date is within vacation period
+            if (!isDateWithinVacationPeriod(excursionDate, vacationStartDate, vacationEndDate)) {
+                Toast.makeText(this, "Excursion date must be within the vacation period.", Toast.LENGTH_LONG).show();
+                return; // Prevent saving
+            }
+        }
+
+        // Check for existing excursion
+        Excursion existingExcursion = repository.getExcursionByID(excursionID);
+        if (existingExcursion != null) {
+            // Update existing excursion
+            existingExcursion.setExcursionName(editName.getText().toString());
+            existingExcursion.setDate(excursionDate);
+            existingExcursion.setExcursionID(excursionID);
+            repository.update(existingExcursion);
+            Toast.makeText(this, existingExcursion.getExcursionName() + " updated", Toast.LENGTH_LONG).show();
+        } else {
+            // Create new excursion
+            excursionID = (repository.getmAllExcursions() != null && repository.getmAllExcursions().isEmpty()) ? 1 : repository.getmAllExcursions().get(repository.getmAllExcursions().size() - 1).getExcursionID() + 1;
+            Excursion newExcursion = new Excursion(excursionID, editName.getText().toString(), excursionDate, vacationID);
+            repository.insert(newExcursion);
+            Toast.makeText(this, newExcursion.getExcursionName() + " saved", Toast.LENGTH_LONG).show();
+        }
+
+        Intent intent = new Intent(ExcursionDetails.this, VacationList.class);
+        startActivity(intent);
+    }
+
+    private void deleteExcursion() {
+        for (Excursion excursion : repository.getmAllExcursions()) {
+            if (excursion.getExcursionID() == excursionID) currentExcursion = excursion;
+            repository.delete(excursion);
+            Toast.makeText(ExcursionDetails.this, currentExcursion.getExcursionName() + " was deleted", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(ExcursionDetails.this, VacationList.class);
+            startActivity(intent);
+        }
+    }
+
+    private void shareExcursion() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        String formattedText = String.format("Excursion: %s\nDate: %s\nNote: %s", excursionName, date, note);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, formattedText);
+        sendIntent.putExtra(Intent.EXTRA_TITLE, vacationName);
+        sendIntent.setType("text/plain");
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
+    private void setNotification() {
+        String dateFromScreen = editDate.getText().toString();
+        String myFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        Date myDate = null;
+        try {
+            myDate = sdf.parse(dateFromScreen);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (myDate != null) {
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
+            intent.putExtra("key", excursionName + " Today");
+            PendingIntent sender = PendingIntent.getBroadcast(ExcursionDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
+        }
     }
 }

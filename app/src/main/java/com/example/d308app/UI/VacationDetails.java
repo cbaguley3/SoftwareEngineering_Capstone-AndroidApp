@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -45,6 +46,7 @@ public class VacationDetails extends AppCompatActivity {
     Vacation currentVacation;
     int numExcursions;
     Excursion currentExcursion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,9 +178,22 @@ public class VacationDetails extends AppCompatActivity {
             return true;
         }
         if (item.getItemId() == R.id.share) {
+            ArrayList<String> excursionNamesList = new ArrayList<>();
+            List<Excursion> excursions = repository.getExcursionsByVacationID(vacationID);
+
+            for (Excursion excursion : excursions) {
+                excursionNamesList.add(excursion.getExcursionName());
+            }
+
+            StringBuilder excursionsBuilder = new StringBuilder();
+            for (String name : excursionNamesList) {
+                excursionsBuilder.append(name).append(",\n");
+            }
+            String excursionsFormatted = excursionsBuilder.toString();
+
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            String formattedText = String.format("Lodging:%s\nDate: %s - %s", lodging, startDate, endDate);
+            String formattedText = String.format("Lodging: %s Date: %s - %s. Excursions: %s", lodging, startDate, endDate, excursionsFormatted );
             sendIntent.putExtra(Intent.EXTRA_TEXT, formattedText);
             sendIntent.putExtra(Intent.EXTRA_TITLE, vacationName);
             sendIntent.setType("text/plain");
@@ -187,26 +202,40 @@ public class VacationDetails extends AppCompatActivity {
             return true; // Added return statement to prevent falling through
         }
         if (item.getItemId() == R.id.notify) {
-            String dateFromScreen = editStartDate.getText().toString();
-            String myFormat = "MM/dd/yy";
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            Date myDate = null;
-            try {
-                myDate = sdf.parse(dateFromScreen);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (myDate != null) {
+            String startDateString = editStartDate.getText().toString();
+            String endDateString = editEndDate.getText().toString();
+            setNotification(startDateString, vacationName + " Starts Today");
+            setNotification(endDateString, vacationName + " Ends Today");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setNotification(String dateString, String message) {
+        String myFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        Date myDate = null;
+        try {
+            myDate = sdf.parse(dateString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (myDate != null) {
+            // Check if the date is today
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(myDate);
+            int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
+            int currentDayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+
+            if (dayOfYear == currentDayOfYear) {
                 Long trigger = myDate.getTime();
                 Intent intent = new Intent(VacationDetails.this, MyReceiver.class);
-                intent.putExtra("key", vacationName + " Today");
+                intent.putExtra("key", message);
                 PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, ++MainActivity.numAlert, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP, trigger, sender);
             }
-            return true; // Added return statement to prevent falling through
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void saveVacation() {
@@ -276,22 +305,22 @@ public class VacationDetails extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setupRecyclerView();
-//        refreshExcursionList();
+        refreshExcursionList();
     }
 
 
-//    private void refreshExcursionList() {
-//        RecyclerView recyclerView = findViewById(R.id.excursionrecyclerview);
-//        final ExcursionAdaptor excursionAdaptor = new ExcursionAdaptor(this);
-//        recyclerView.setAdapter(excursionAdaptor);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        List<Excursion> filteredExcursions = new ArrayList<>();
-//        for (Excursion excursion : repository.getmAllExcursions()) {
-//            if (excursion.getVacationID() == vacationID) {
-//                filteredExcursions.add(excursion);
-//            }
-//        }
-//        excursionAdaptor.setExcursions(filteredExcursions);
-//    }
+    private void refreshExcursionList() {
+        RecyclerView recyclerView = findViewById(R.id.excursionrecyclerview);
+        final ExcursionAdaptor excursionAdaptor = new ExcursionAdaptor(this);
+        recyclerView.setAdapter(excursionAdaptor);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        List<Excursion> filteredExcursions = new ArrayList<>();
+        for (Excursion excursion : repository.getmAllExcursions()) {
+            if (excursion.getVacationID() == vacationID) {
+                filteredExcursions.add(excursion);
+            }
+        }
+        excursionAdaptor.setExcursions(filteredExcursions);
+    }
 
 }

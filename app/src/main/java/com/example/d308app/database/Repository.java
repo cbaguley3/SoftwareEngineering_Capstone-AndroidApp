@@ -7,6 +7,7 @@ import com.example.d308app.dao.VacationDAO;
 import com.example.d308app.entities.Excursion;
 import com.example.d308app.entities.Vacation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,19 +19,19 @@ public class Repository {
     private List<Vacation> mAllVacations;
     private List<Excursion> mAllExcursions;
 
-    private static int NUMBER_OF_THREADS=4;
-    static final ExecutorService databaseExecutor= Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    private static int NUMBER_OF_THREADS = 4;
+    static final ExecutorService databaseExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public Repository(Application application) {
-        VacationDatabaseBuilder db=VacationDatabaseBuilder.getDatabase(application);
-        mExcursionDAO=db.excursionDAO();
-        mVacationDAO=db.vacationDAO();
+        VacationDatabaseBuilder db = VacationDatabaseBuilder.getDatabase(application);
+        mExcursionDAO = db.excursionDAO();
+        mVacationDAO = db.vacationDAO();
 
     }
 
-    public List<Vacation>getmAllVacations(){
-        databaseExecutor.execute(()->{
-            mAllVacations=mVacationDAO.getAllVacations();
+    public List<Vacation> getmAllVacations() {
+        databaseExecutor.execute(() -> {
+            mAllVacations = mVacationDAO.getAllVacations();
         });
 
         try {
@@ -41,9 +42,10 @@ public class Repository {
         return mAllVacations;
     }
 
-    public List<Excursion>getmAllExcursions(){
-        databaseExecutor.execute(()->{
-            mAllExcursions=mExcursionDAO.getAllExcursions();
+
+    public List<Excursion> getmAllExcursions() {
+        databaseExecutor.execute(() -> {
+            mAllExcursions = mExcursionDAO.getAllExcursions();
         });
 
         try {
@@ -88,6 +90,29 @@ public class Repository {
         databaseExecutor.execute(() -> {
             mExcursionDAO.delete(excursion);
         });
+    }
+
+    public Excursion getExcursionByID(int excursionID) {
+        for (Excursion excursion : getmAllExcursions()) {
+            if (excursion.getExcursionID() == excursionID) {
+                return excursion;
+            }
+        }
+        return null;
+    }
+
+
+    public List<Excursion> getExcursionsByVacationID(int vacationID) {
+        List<Excursion> allExcursions = getmAllExcursions();
+        List<Excursion> excursionsForVacation = new ArrayList<>();
+
+        for (Excursion excursion : allExcursions) {
+            if (excursion.getVacationID() == vacationID) {
+                excursionsForVacation.add(excursion);
+            }
+        }
+
+        return excursionsForVacation;
     }
 }
 

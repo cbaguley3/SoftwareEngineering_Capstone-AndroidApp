@@ -6,7 +6,7 @@ extract_zip:
   script:
     - apt-get update -y
     - apt-get install unzip -y
-    - unzip D308 App.zip -d ./extracted_files
+    - unzip D308_App.zip -d ./extracted_files
   artifacts:
     paths:
       - ./extracted_files

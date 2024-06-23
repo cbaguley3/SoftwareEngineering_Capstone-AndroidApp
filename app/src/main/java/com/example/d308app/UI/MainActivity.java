@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // Registration code ^^^^^
 
     }
-
+        // Registration Validation
     private Boolean validateInput(User user) {
         if (user.getUserName().isEmpty() ||
             user.getPassword().isEmpty() ||

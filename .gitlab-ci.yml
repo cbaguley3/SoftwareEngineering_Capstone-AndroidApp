@@ -1,0 +1,12 @@
+stages:
+  - extract
+
+extract_zip:
+  stage: extract
+  script:
+    - apt-get update -y
+    - apt-get install unzip -y
+    - unzip D308 App.zip -d ./extracted_files
+  artifacts:
+    paths:
+      - ./extracted_files

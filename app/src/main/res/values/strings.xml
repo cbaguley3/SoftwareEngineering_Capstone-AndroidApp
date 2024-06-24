@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">D308 App</string>
+    <string name="dateFormat">mm/dd/yy</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_password">Enter Password</string>
+    <string name="enter_username">Enter Username</string>
+    <string name="new_user_register_here">New user? Register here:</string>
+    <string name="search">Search</string>
+</resources>

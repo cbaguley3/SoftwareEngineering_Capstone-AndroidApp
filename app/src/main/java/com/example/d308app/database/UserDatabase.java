@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.d308app.entities.User;
 import com.example.d308app.dao.UserDAO;
 
+
 @Database(entities = {User.class}, version = 1)
 public abstract class UserDatabase extends RoomDatabase {
     private static final String dbName = "user";
@@ -24,4 +25,5 @@ public abstract class UserDatabase extends RoomDatabase {
     }
 
     public abstract UserDAO userDao();
+
 }

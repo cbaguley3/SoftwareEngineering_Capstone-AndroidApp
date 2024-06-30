@@ -13,7 +13,11 @@ import com.example.d308app.entities.Vacation;
 
 @Database(entities = {Vacation.class, Excursion.class}, version= 9, exportSchema = false)
 public abstract class VacationDatabaseBuilder extends RoomDatabase {
-    public abstract VacationDAO vacationDAO();
+
+    public static VacationDAO vacationDAO() {
+        return null;
+    }
+
     public abstract ExcursionDAO excursionDAO();
 
     private static volatile VacationDatabaseBuilder INSTANCE;

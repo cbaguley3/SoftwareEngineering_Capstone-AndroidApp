@@ -36,10 +36,14 @@ public class VacationAdaptor extends RecyclerView.Adapter<VacationAdaptor.Vacati
         }
     }
 
-    void setVacations(List<Vacation> vacations) {
+    public void setVacations(List<Vacation> vacations) {
         mVacations = vacations;
         mVacationsFiltered = new ArrayList<>(vacations);
         notifyDataSetChanged();
+    }
+
+    public List<Vacation> getVacations() {
+        return mVacations; // Return current list of vacations
     }
 
     @Override

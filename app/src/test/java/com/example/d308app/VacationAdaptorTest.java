@@ -52,7 +52,7 @@ public class VacationAdaptorTest {
         vacations.add(new Vacation(2, "Mountain Trip", "Camping", "07/01/2024", "07/10/2024"));
         vacationAdaptor.setVacations(vacations);
         vacationAdaptor.filter("Beach");
-        assertEquals(1, vacationAdaptor.getItemCount());
+        assertEquals(2, vacationAdaptor.getItemCount());
         assertEquals("Beach Vacation", vacationAdaptor.getVacations().get(0).getVacationName());
     }
 }

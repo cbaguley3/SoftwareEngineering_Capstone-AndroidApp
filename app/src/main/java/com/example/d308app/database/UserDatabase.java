@@ -10,7 +10,7 @@ import com.example.d308app.entities.User;
 import com.example.d308app.dao.UserDAO;
 
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {User.class}, version = 3)
 public abstract class UserDatabase extends RoomDatabase {
     private static final String dbName = "user";
     private static UserDatabase userDatabase;

@@ -91,6 +91,3 @@ public class ExcursionAdaptor extends RecyclerView.Adapter<ExcursionAdaptor.Excu
         else return 0;
     }
 }
-
-
-

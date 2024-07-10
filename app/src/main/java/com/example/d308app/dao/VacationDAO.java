@@ -9,13 +9,14 @@ import androidx.room.Update;
 
 import com.example.d308app.entities.Vacation;
 
+
 import java.util.List;
+
 
 @Dao
 public interface VacationDAO {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE) // <<<  database insert issue
     void insert(Vacation vacation);
-
     @Update
     void update(Vacation vacation);
 
@@ -24,6 +25,4 @@ public interface VacationDAO {
 
     @Query("SELECT * FROM vacations ORDER BY startDate ASC")
     List<Vacation> getAllVacations();
-
-
 }

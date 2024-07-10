@@ -15,12 +15,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.d308app.R;
 import com.example.d308app.dao.UserDAO;
+import com.example.d308app.database.Repository;
 import com.example.d308app.database.UserDatabase;
 import com.example.d308app.entities.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
     public static int numAlert;
+    private Repository repository;
 
     // Registration code
     EditText userName, password, name, editUsername, editPassword;
@@ -112,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         // Registration code ^^^^^
-
+        repository = new Repository(getApplication());
     }
         // Registration Validation
     private Boolean validateInput(User user) {

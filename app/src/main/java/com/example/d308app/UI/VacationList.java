@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -14,11 +17,17 @@ import com.example.d308app.R;
 import com.example.d308app.database.Repository;
 import com.example.d308app.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class VacationList extends AppCompatActivity {
     private Repository repository;
     private VacationAdaptor vacationAdaptor;
+
+    //search bar code
+    private List<Vacation> allVacations = new ArrayList<>();
+    private List<Vacation> filteredVacations = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +44,19 @@ public class VacationList extends AppCompatActivity {
             }
         });
 
+        // search bar code block
+//        listView = findViewById(R.id.recyclerview);
+//        arrayAdapter = new ArrayAdapter<String>(this, R.layout.vacation_list_item);
+//        listView.setAdapter(arrayAdapter);
+
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         repository = new Repository(getApplication());
-        List<Vacation> allVacations = repository.getmAllVacations();
+        allVacations = repository.getmAllVacations();
+        filteredVacations.addAll(allVacations); // Initially show all vacations
         vacationAdaptor = new VacationAdaptor(this);
         recyclerView.setAdapter(vacationAdaptor);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdaptor.setVacations(allVacations);
+        vacationAdaptor.setVacations(filteredVacations);
     }
 
     @Override
@@ -59,7 +74,8 @@ public class VacationList extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (vacationAdaptor != null) {
-                    vacationAdaptor.filter(newText);
+                    filterVacations(newText);
+                    return true;
                 }
                 return false;
             }
@@ -76,5 +92,19 @@ public class VacationList extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void filterVacations(String query) {
+        filteredVacations.clear();
+        if (query.isEmpty()) {
+            filteredVacations.addAll(allVacations);
+        } else {
+            for (Vacation vacation : allVacations) {
+                if (vacation.getVacationName().toLowerCase().contains(query.toLowerCase())) {
+                    filteredVacations.add(vacation);
+                }
+            }
+        }
+        vacationAdaptor.setVacations(filteredVacations);
     }
 }

@@ -17,7 +17,6 @@ public interface UserDAO {
     User login(String userName, String password);
 
 //  Testing code
-
     @Query("SELECT * FROM users WHERE id = :id")
     User getUserById(int id);
 

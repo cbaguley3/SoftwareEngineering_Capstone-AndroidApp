@@ -24,16 +24,17 @@ public class Repository {
 
     public Repository(Application application) {
         VacationDatabaseBuilder db = VacationDatabaseBuilder.getDatabase(application);
-        mExcursionDAO = db.excursionDAO();
         mVacationDAO = db.vacationDAO();
+        mExcursionDAO = db.excursionDAO();
+
 
     }
 
-    public List<Vacation> getmAllVacations() {
+    // FIXED CODE
+    public List<Vacation> getmAllVacations() {                  // code that fixed UI issue. Removed new ArrayList() getAllVacations
         databaseExecutor.execute(() -> {
             mAllVacations = mVacationDAO.getAllVacations();
         });
-
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -43,7 +44,8 @@ public class Repository {
     }
 
 
-    public List<Excursion> getmAllExcursions() {
+
+    public List<Excursion> getmAllExcursions() {                    // code that fixed UI issue. Removed new ArrayList() getAllExcursions
         databaseExecutor.execute(() -> {
             mAllExcursions = mExcursionDAO.getAllExcursions();
         });
@@ -115,4 +117,3 @@ public class Repository {
         return excursionsForVacation;
     }
 }
-

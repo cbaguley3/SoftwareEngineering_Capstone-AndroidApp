@@ -11,12 +11,10 @@ import com.example.d308app.dao.VacationDAO;
 import com.example.d308app.entities.Excursion;
 import com.example.d308app.entities.Vacation;
 
-@Database(entities = {Vacation.class, Excursion.class}, version= 9, exportSchema = false)
+@Database(entities = {Vacation.class, Excursion.class}, version= 12, exportSchema = false)
 public abstract class VacationDatabaseBuilder extends RoomDatabase {
 
-    public static VacationDAO vacationDAO() {
-        return null;
-    }
+    public abstract VacationDAO vacationDAO();
 
     public abstract ExcursionDAO excursionDAO();
 

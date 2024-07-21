@@ -15,7 +15,6 @@ import com.example.d308app.entities.Vacation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class VacationAdaptor extends RecyclerView.Adapter<VacationAdaptor.VacationViewHolder> {

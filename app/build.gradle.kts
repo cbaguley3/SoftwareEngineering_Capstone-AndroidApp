@@ -8,7 +8,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.d308app"
+        applicationId = "com.testingWGU.d308app"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

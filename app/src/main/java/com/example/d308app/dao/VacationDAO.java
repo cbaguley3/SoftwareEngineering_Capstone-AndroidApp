@@ -9,7 +9,6 @@ import androidx.room.Update;
 
 import com.example.d308app.entities.Vacation;
 
-
 import java.util.List;
 
 

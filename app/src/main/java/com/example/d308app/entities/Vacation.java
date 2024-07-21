@@ -1,6 +1,5 @@
 package com.example.d308app.entities;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 

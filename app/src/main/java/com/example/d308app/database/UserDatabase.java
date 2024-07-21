@@ -6,8 +6,8 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.d308app.entities.User;
 import com.example.d308app.dao.UserDAO;
+import com.example.d308app.entities.User;
 
 
 @Database(entities = {User.class}, version = 5)
